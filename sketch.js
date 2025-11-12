@@ -19,8 +19,13 @@ function setup() {
 
   processData();
   filteredVolcanoes = volcanoes;
+
   textFont('Arial');
   textAlign(CENTER, CENTER);
+
+  // Gestione filtri
+  const typeSelect = document.getElementById('typeFilter');
+  typeSelect.addEventListener('change', applyFilters);
 }
 
 // === Legge il CSV ===
@@ -52,9 +57,9 @@ function draw() {
 
   hoveredVolcano = null;
 
-  volcanoes.forEach(v => {
-    const pos = project(v.lat, v.lon);
-    drawVolcanoGlyph(v, pos.x, pos.y); 
+  filteredVolcanoes.forEach(v => {
+  const pos = project(v.lat, v.lon);
+  drawVolcanoGlyph(v, pos.x, pos.y);
   });
 
   if (hoveredVolcano) drawTooltip(hoveredVolcano);
@@ -136,18 +141,19 @@ function getColorByType(type) {
 function drawLegend() {
   rectMode(CORNER);
   fill(255, 230);
-  rect(20, height - 140, 280, 120, 10);
+  rect(20, height - 140, 180, 130, 10);
 
   fill(0);
   textSize(12);
   textAlign(LEFT, CENTER);
-  text("Legenda - Tipi di vulcano:", 35, height - 125);
+  text("Legenda", 35, height - 125);
 
   let y = height - 105;
-  drawLegendGlyph(50, y, "Triangolo rosso = Stratovolcano", color(255, 60, 60), "triangle");
-  drawLegendGlyph(50, y + 20, "Cerchio verde = Cone", color(0, 180, 90), "circle");
-  drawLegendGlyph(50, y + 40, "Quadrato viola = Maars / Tuff ring", color(160, 80, 255), "square");
-  drawLegendGlyph(50, y + 60, "Rombo arancio = Crater System", color(255, 150, 0), "diamond");
+  drawLegendGlyph(50, y, "Stratovolcano", color(255, 60, 60), "triangle");
+  drawLegendGlyph(50, y + 20, "Cone", color(0, 180, 90), "circle");
+  drawLegendGlyph(50, y + 40, "Maars / Tuff ring", color(160, 80, 255), "square");
+  drawLegendGlyph(50, y + 60, "Crater System", color(255, 150, 0), "diamond");
+  drawLegendGlyph(50, y + 80, "Other / Unknown", color(150), "emptycircle");
 }
 
 // === piccoli glifi nella legenda
@@ -168,7 +174,12 @@ function drawLegendGlyph(x, y, label, col, shape) {
   stroke(col);
   strokeWeight(1.5);
   ellipse(0, 0, s, s);
-  } else if (shape === "diamond") {
+  } else if (shape === "emptycircle") {
+    noFill();
+    stroke(col);
+    strokeWeight(1.5);
+    ellipse(0, 0, s, s);
+  }  else if (shape === "diamond") {
     beginShape();
     vertex(0, -s / 1.2);
     vertex(s / 1.2, 0);
@@ -215,3 +226,22 @@ function drawTooltip(v) {
     ty += lineHeight;
   }
 }
+
+// === filtro ===
+function applyFilters() {
+  const typeVal = document.getElementById('typeFilter').value;
+
+  filteredVolcanoes = volcanoes.filter(v => {
+    if (typeVal === "all") return true;
+
+    const type = (v.type || "").toLowerCase();
+
+    if (typeVal === "Stratovolcano") return type.includes("strato");
+    if (typeVal === "Cone") return type.includes("cone");
+    if (typeVal === "Maar/Tuff") return type.includes("maar") || type.includes("tuff");
+    if (typeVal === "Crater") return type.includes("crater");
+    if (typeVal === "Other/Unknown") return type.includes("other") || type.includes("unknown");
+    return false;
+  });
+}
+

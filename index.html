@@ -6,26 +6,84 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
   <style>
     body {
-      background: #f4f4f4;
+      background: #e9fbe7;
       font-family: Arial, sans-serif;
       margin: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    #container {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      margin-top: 20px;
+    }
+
     #visualization {
       width: 1000px;
       height: 600px;
-      margin-top: 20px;
       border: 1px solid #ccc;
       background: white;
       position: relative;
+    }
+
+    #filters {
+      width: 220px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    #filters h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    #filters label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    #filters select {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
   <h1>Vulcani del Mondo</h1>
-  <div id="visualization"></div>
+
+  <div id="container">
+    <!-- Visualizzazione mappa -->
+    <div id="visualization"></div>
+
+    <!-- Pannello filtri -->
+    <div id="filters">
+      <h3>Filtri</h3>
+
+      <label for="typeFilter">Tipo vulcano:</label>
+      <select id="typeFilter">
+        <option value="all">Tutti</option>
+        <option value="Stratovolcano">Stratovolcano</option>
+        <option value="Cone">Cone</option>
+        <option value="Maar/Tuff">Maar / Tuff</option>
+        <option value="Crater">Crater</option>
+        <option value="Other/Unknown">Other / Unknown</option>
+      </select>
+    </div>
+  </div>
+
   <script src="sketch.js"></script>
 </body>
 </html>
